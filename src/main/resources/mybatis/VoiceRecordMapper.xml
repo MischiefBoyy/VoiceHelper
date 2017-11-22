@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.inrich.VoiceHelper.mapper.VoiceRecordMapper">
+	
+	
+	
+	
+	
+	
+	<select id="getVoiceRecord" resultType="map" parameterType="java.lang.String">
+		select file_path as filePath,file_name as fileName,keyword,media_id AS mediaId,TIMESTAMPDIFF(SECOND,update_time,NOW()) as sjc FROM keyword_record WHERE keyword= #{name}
+	</select>
+	
+	<insert id="addVoiceRecord" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO keyword_record(media_id,create_time,update_time,keyword,file_path,file_name) VALUES(#{mediaId},#{createTime},#{updateTime},#{keyword},#{filePath},#{fileName})
+	</insert>
+	
+	
+	
+</mapper>

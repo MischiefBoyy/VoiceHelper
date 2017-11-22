@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.inrich.VoiceHelper.mapper.BankMapper">
+	
+	
+	<select id="getBankIndexInfo" resultType="map" >
+		select id,level,question from bankl1
+	</select>
+	
+	<select id="getChildlistByPid" resultType="map" parameterType="java.lang.Integer">
+		select id,question,level,pid,num from bankL2 where pid=#{pid}
+	</select>
+	
+	<select id="getOneChildInfo" resultType="java.lang.String" parameterType="java.lang.Integer">
+		select answer from bankL2 where id=#{id}
+	</select>
+	
+	<select id="getOneChildByQa"  resultType="java.lang.String" parameterType="java.lang.Integer">
+		select answer from bankL2 where pid=#{parentId,jdbcType=INTEGER} and num=#{num,jdbcType=INTEGER}
+	</select>
+	
+	
+	
+</mapper>

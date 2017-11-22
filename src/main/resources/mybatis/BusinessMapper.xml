@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.inrich.VoiceHelper.mapper.BusinessMapper">
+	
+	
+	<resultMap type="BusinessIntrodution" id="business_map">
+		<id property="id" column="id" jdbcType="INTEGER"></id>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="introdution" column="introdution" jdbcType="VARCHAR"/>
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="level" column="level" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	
+	<select id="findAllBusiness"  resultType="java.util.HashMap">
+		select id,name,level from business where level != 0
+	</select>
+	
+	<select id="getIntrodutionByName"  resultType="java.lang.String">
+		select introdution from business where name= #{name}
+	</select>
+	
+	<select id="getBusinessByName"  resultMap="business_map" >
+		select * from business where name= #{name}
+	</select>
+	
+	
+</mapper>

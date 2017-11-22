@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.inrich.VoiceHelper.mapper.TokenMapper">
+	
+	
+	<resultMap type="TokenInfo" id="token_map">
+		<id property="id" column="id" jdbcType="INTEGER"></id>
+		<result property="token" column="token_vaule" jdbcType="VARCHAR"/>
+		<result property="name" column="token_name" jdbcType="VARCHAR"/>
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	
+	
+	<select id="get" resultType="map" parameterType="java.lang.String">
+		select token_vaule as tokenVaule,TIMESTAMPDIFF(SECOND,update_time,now()) as tsf from token where token_name= #{name}
+	</select>
+	
+	<insert id="add" parameterType="TokenInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into token(token_vaule, token_name,create_time,update_time) values(#{token}, #{name},#{createTime},#{updateTime})
+	</insert>
+	
+	<update id="update" parameterType="java.util.Map">
+		update token set token_vaule = #{tokenValue},update_time = #{updateTime} where token_name = #{tokenName};
+	</update>
+	
+	
+</mapper>

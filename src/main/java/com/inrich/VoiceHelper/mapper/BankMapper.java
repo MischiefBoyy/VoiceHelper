@@ -28,9 +28,18 @@ public interface BankMapper {
 	String getOneChildInfo(Integer id);
 	/**
 	 * 
-	 * 获得一个孩子的具体信息(重载),使用在文本语义中
+	 * 获得一个孩子的具体信息,使用在文本语义中
 	 * @return
 	 */
 	String getOneChildByQa(@Param("parentId")Integer parentId,@Param("num")Integer num);
+	
+	/**
+	 * 
+	 * @TODO 获得父类的介绍,语意解析中使用
+	 * @Time 2017年11月22日 下午2:13:44
+	 * @author WEQ
+	 * @return String
+	 */
+	String getParentIntroduction(Integer id);
 
 }

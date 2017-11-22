@@ -2,8 +2,10 @@ package com.inrich.VoiceHelper.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,11 @@ import org.springframework.stereotype.Service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.inrich.VoiceHelper.mapper.BankMapper;
+import com.inrich.VoiceHelper.mapper.TokenMapper;
+import com.inrich.VoiceHelper.mapper.VoiceRecordMapper;
 import com.inrich.VoiceHelper.model.IntrodutionModel;
 import com.inrich.VoiceHelper.model.OutprintMsg;
+import com.inrich.VoiceHelper.util.DatetimeUtil;
 import com.inrich.VoiceHelper.util.MessageUtil;
 import com.inrich.VoiceHelper.util.RemoteProperties;
 import com.inrich.VoiceHelper.util.TransformVoice;
@@ -23,9 +28,13 @@ public class BankServiceImpl implements BankService {
 	@Autowired
 	private BankMapper bankMapper;
 	@Autowired
+	private VoiceRecordMapper voiceRecordMapper;
+	@Autowired
 	private OperateVoiceService operateVoiceService;
 	@Autowired
 	private RemoteProperties remoteProperties;
+	@Autowired
+	private ComposeVoiceService  composeVoiceService;
 
 	@Override
 	public String getIndexInfo() {
@@ -101,19 +110,57 @@ public class BankServiceImpl implements BankService {
 			// 获得问答库对应的返回值
 			answer = jsonObject.getAsJsonObject("data").getAsJsonObject("answer").get("text").getAsString();
 			IntrodutionModel model = null;
+			//父类id
+			Integer parentId=null;
+			//再父类所对应的位数
+			Integer num=null;
+			//语音记录文件的路径
+			String voiceRecoed=null;
+			//返回的介绍术语
+			String introduction=null;
 			if (answer.length() == 1) {
-				model = new IntrodutionModel(bankMapper.getChildlistByPid(Integer.parseInt(answer)), false,
-						"aaaaaaaaaaaaaaaa");
+				parentId=Integer.parseInt(answer);
+				introduction=bankMapper.getParentIntroduction(parentId);
+				model = new IntrodutionModel(bankMapper.getChildlistByPid(parentId), false,introduction);
 			}
 			if (answer.length() >=3) {
 				String[] aa = answer.split("-");
-				int parentId = Integer.parseInt(aa[0]);
-				int num = Integer.parseInt(aa[1]);
-				model = new IntrodutionModel(null, true, bankMapper.getOneChildByQa(parentId, num));
+				 parentId = Integer.parseInt(aa[0]);
+				 num = Integer.parseInt(aa[1]);
+				// child的介绍文本
+				introduction=bankMapper.getOneChildByQa(parentId, num);
+				model = new IntrodutionModel(null, true, introduction);
 			}
+			//获得银行问答的语音记录
+			voiceRecoed=voiceRecordMapper.getBankVoiceRecord(parentId, num);
+			//如果没有则进行合成
+			if(voiceRecoed == null || voiceRecoed == "") {
+				String fileName=UUID.randomUUID().toString();
+				String beforePath = remoteProperties.getXfpcm() + fileName + ".pcm";
+				String afterPath = remoteProperties.getPcm2mp3()+ fileName + ".mp3";
+				try {
+					//发送文本到科大讯飞进行语音合成
+					composeVoiceService.composeVoice(introduction, beforePath, Thread.currentThread());
+					Thread.sleep(15000);
+				} catch (InterruptedException e) {
+					//将科大讯飞生成的pcm格式的语音转换成MP3
+					TransformVoice.doTransformPcm2Wav(beforePath, afterPath, "libmp3lame",remoteProperties.getFfmpeg());
+					//更新语音记录数据库
+					Map<String,Object> map=new HashMap<String,Object>();
+					map.put("parentId", parentId);
+					map.put("num", num==null?0:num);
+					map.put("path", afterPath);
+					map.put("name", fileName + ".mp3");
+					map.put("createTime", DatetimeUtil.toDateTimeStr(new Date()));
+					map.put("updateTime", DatetimeUtil.toDateTimeStr(new Date()));
+					voiceRecordMapper.addBankVoiceRecord(map);
+					voiceRecoed=fileName + ".mp3";
+				}
+			}
+			//返回json到前台
 			Map<String,Object> map=new HashMap<>();
 			map.put("data", model);
-			map.put("path", "61ad7cfa-797b-405e-b987-e504c7e6325f.mp3");
+			map.put("path", voiceRecoed);
 			result = new OutprintMsg("success", map).toJson();
 			return result;
 

@@ -19,6 +19,10 @@
 		select answer from bankL2 where pid=#{parentId,jdbcType=INTEGER} and num=#{num,jdbcType=INTEGER}
 	</select>
 	
+	<select id="getParentIntroduction" resultType="java.lang.String" parameterType="java.lang.Integer">
+		select answer from bankL1 where id=#{id}
+	</select>
+	
 	
 	
 </mapper>

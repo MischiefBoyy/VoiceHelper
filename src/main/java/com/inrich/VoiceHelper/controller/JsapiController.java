@@ -105,8 +105,6 @@ public class JsapiController {
 	@RequestMapping(value="/textQa",method=RequestMethod.POST)
 	public String textQa(@RequestParam String question) throws UnsupportedEncodingException {
 		String outPrint=operateVoiceService.analysisText(question,"main");
-		System.out.println(remoteProperties.getFfmpeg());
-		System.out.println(remoteProperties.getPcm2mp3());
 		return outPrint;
 	}
 	

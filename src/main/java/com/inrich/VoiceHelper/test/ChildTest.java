@@ -91,10 +91,8 @@ public class ChildTest {
 	
 	@Test
 	public void testBankVoiceQa() throws UnsupportedEncodingException{
-		String errorPath="D:\\wxtoxf\\uY3arxD06cULwgx503lir4POIRqBQNbDBhzGOp51CW7hf4bWe6vU7b2hwRxUw7Rw.wav";
-		String rightPath="D:\\wxtoxf\\lCGiZCm5XKxxac3cLcFPVvIfvaPaSP95vzNbvpvRDcXGwkqj1j-hO_lxvl0Q_fsc.wav";
-		//System.out.println(operateVoiceService.analysisVoice(errorPath, "main"));
-		System.out.println(bankService.doVoiceQa(rightPath,"bank"));
+		String mediaId="NtW1EqEkhgWkoJTNEeP6IFQ12kwZmjLkNARtqGPyYWB0NB41kNkWl_llSz1d7etI";
+		System.out.println(bankService.doVoiceQa(mediaId,"bank"));
 	}
 	@Test
 	public void testCreatMenu() {

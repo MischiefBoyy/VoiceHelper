@@ -2,6 +2,9 @@ package com.inrich.VoiceHelper.mapper;
 
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
+
 public interface VoiceRecordMapper {
 	
 	/**
@@ -17,5 +20,24 @@ public interface VoiceRecordMapper {
 	 * @return
 	 */
 	int addVoiceRecord(Map<String,Object> map);
+	
+	
+	/**
+	 * 
+	 * @TODO 插入一条银行问答的语音记录
+	 * @Time 2017年11月22日 下午2:19:30
+	 * @author WEQ
+	 * @return int
+	 */
+	int addBankVoiceRecord(Map<String,Object> map);
+	
+	/**
+	 * 
+	 * @TODO 获得银行的一条语音记录
+	 * @Time 2017年11月22日 下午2:23:32
+	 * @author WEQ
+	 * @return String
+	 */
+	String getBankVoiceRecord(@Param("pid") Integer pid,@Param("num") Integer num);
 
 }

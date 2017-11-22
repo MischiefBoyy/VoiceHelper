@@ -16,5 +16,19 @@
 	</insert>
 	
 	
+	<insert id="addBankVoiceRecord" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bank_record(pid,num,path,name,create_time,update_time) VALUES(#{parentId},#{num},#{path},#{name},#{createTime},#{updateTime})
+	</insert>
+	
+	<select id="getBankVoiceRecord" resultType="java.lang.String" parameterType="java.lang.Integer">
+		select name  FROM bank_record where pid=#{pid}
+			<if test="#{num} != null">
+				and num=#{num}
+			</if>
+
+		
+	</select>
+	
+	
 	
 </mapper>

@@ -1,5 +1,6 @@
 package com.inrich.VoiceHelper.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import com.inrich.VoiceHelper.model.TokenInfo;
@@ -26,5 +27,7 @@ public interface TokenMapper {
 	 * @author WEQ
 	 */
 	Map<String,Object> get(String name);
+	
+	List<TokenInfo> getTestData();
 
 }

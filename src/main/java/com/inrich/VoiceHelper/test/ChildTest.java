@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.google.gson.Gson;
+import com.inrich.VoiceHelper.mapper.TokenMapper;
+import com.inrich.VoiceHelper.model.TokenInfo;
 import com.inrich.VoiceHelper.service.BankService;
 import com.inrich.VoiceHelper.service.ComposeVoiceService;
 import com.inrich.VoiceHelper.service.CreateMenuService;
@@ -32,7 +35,8 @@ public class ChildTest {
 	private BankService bankService;
 	@Autowired
 	private CreateMenuService createMenuService;
-
+	@Autowired
+	private TokenMapper tokenMapper;
 	@Test
 	public void testIndexIntrodution() {
 		System.out.println(introdutionService.getIndexIntrodution());
@@ -98,5 +102,14 @@ public class ChildTest {
 	public void testCreatMenu() {
 		createMenuService.updateMenu();
 	}
+	
+	@Test
+	public void testIMS() {
+		List<TokenInfo> list=tokenMapper.getTestData();
+		System.out.println("-----------------");
+		System.out.println(new Gson().toJson(list));
+	}
+	
+	
 
 }

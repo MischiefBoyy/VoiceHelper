@@ -25,5 +25,9 @@
 		update token set token_vaule = #{tokenValue},update_time = #{updateTime} where token_name = #{tokenName};
 	</update>
 	
+	<select id="getTestData" resultMap="token_map">
+		select * from token
+	</select>
+	
 	
 </mapper>

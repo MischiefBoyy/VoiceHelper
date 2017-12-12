@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.inrich.VoiceHelper.mapper.OutCallMapper">
+	
+	<resultMap type="QuestionModel" id="question_model">
+		<id property="id" column="id" jdbcType="INTEGER"/>
+		<result property="yesId" column="y_id" jdbcType="INTEGER"/>
+		<result property="refuseId" column="r_id" jdbcType="INTEGER"/>
+		<result property="question" column="question" jdbcType="VARCHAR"/>
+		<result property="action" column="action" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="getIndexQuestion" resultMap="question_model">
+		select * from t_question where id=1; 
+	</select>
+	
+	<select id="getYesQuestion" resultMap="question_model" parameterType="java.lang.Integer">
+		select * from t_question where y_id=#{yesId}; 
+	</select>
+	
+	<select id="getRefuseQuestion" resultType="map" parameterType="java.lang.Integer">
+		select q_id as questionId,a_value as question,r_action as action from t_refuse where r_id=#{refuseId}; 
+	</select>
+	
+	
+	
+	
+	
+	
+	
+</mapper>

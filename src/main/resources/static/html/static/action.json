@@ -1,0 +1,12 @@
+{
+  "state": "success",
+  "data": {
+    "id": 1,
+    "yesId": 2,
+    "yesName":"好的",
+    "refuseId": 1,
+    "refuseName":"滚犊子",
+    "question": "你好请问您现在接听电话方便吗，我是中国银行客户服务中心，工号110。",
+    "action": null
+  }
+}

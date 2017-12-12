@@ -8,12 +8,12 @@
 		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
 		<style type="text/css">
 			a,button,input,textarea{-webkit-tap-highlight-color: rgba(0,0,0,0;)}
-			button,input,textarea{-webkit-tap-highlight-color: rgba(0,0,0,0;);-webkit-user-modify:read-write-plaintext-only;}
+			input,textarea{-webkit-tap-highlight-color: rgba(0,0,0,0;);-webkit-user-modify:read-write-plaintext-only;}
 			*{margin: 0;padding: 0;}
 			a{color: #007AFF;}
 			body{width:100%;font-size: 14px;
 			/*background:url(img/login-bg.png) no-repeat;background-size:cover;*/
-			background: #000;
+			background: #f6f6f6;
 			display: flex;
 			flex-flow: column;
 			    /*min-height: 100vh;*/
@@ -23,7 +23,7 @@
 			  zoom: 1;
 			}
 			/*底部语音、输入框样式*/
-			.footer{position: fixed;bottom: 0;left: 0;min-height: 50px;background: #fff;z-index: 9999;width: 100%;line-height: 50px;}
+			.footer{position: fixed;bottom: 0;left: 0;min-height: 50px;background: #f9f9f9;z-index: 9999;width: 100%;line-height: 50px;border-top: 1px solid #ccc;}
 			.content{margin: 0px 0 60px;flex: 1;}
 			input,button{outline: hidden;}
 			.ptext{border: 1px solid #333333;}
@@ -41,8 +41,16 @@
 			.answer{padding-right: 50px;margin-top: 10px;}
 			.question{padding-left: 50px;margin-top: 10px;}
 			.heard_img{width: 40px;margin: 5px;border-radius: 3px;margin-top: 0;height: 40px;}
-			.answer_text{background: #fff;padding: 10px 12px;width:calc(100%-160px);margin-left: 55px;border-radius: 5px;position: relative;}
+			.answer_text{background: #fff;width:calc(100%-160px);margin-left: 55px;border-radius: 5px;position: relative;overflow-y: hidden;}
 			.question_text{background: #A2CD5A;padding: 10px 12px;border-radius: 5px;position: relative;margin-right: 5px;}
+			.answer_text>p{padding: 10px 12px;border-bottom: 1px solid #f6f6f6;}
+			.answer_text>button{background: #fff;outline: none;border: 1px solid #f6f6f6;display: inline-block;-webkit-appearance : none;line-height: 24px;border-bottom: none;}
+			.Obtn{width: 100%;}
+			.Tbtn{width: 50%;}
+			.Rbtn{color: #007AFF;}
+			.Ebtn{color: #FF0000;}
+			
+			
 			.answer_text:before{position: absolute; content: ""; width: 0;height: 0;right: 100%;top: 14px; border-top: 6px solid transparent;border-right: 8px solid #fff;border-bottom: 6px solid transparent;}
 			.question_text>span{position: absolute;top:30%;left: -20px;color: #CCCCCC;}
 			.question_text:before{position: absolute;content: "";width: 0;height: 0;left: 100%;top: 14px;border-top: 6px solid transparent;border-left: 8px solid #A2CD5A;border-bottom: 6px solid transparent;}
@@ -146,7 +154,7 @@
 							<img src="img/wxLogo.jpg" alt="" width="100%">
 						</div>
 						<div class="answer_text">
-							<p>财安金融微信客服测试</p>
+							
 							
 						</div>
 					</div>
@@ -174,10 +182,10 @@
 		</div>
 	</body>
 	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/wxWeb.js" type="text/javascript" charset="utf-8"></script>
+	<!--<script src="js/wxWeb.js" type="text/javascript" charset="utf-8"></script>-->
 	<script src="js/const.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/AppCommon.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/weixinApi.js" type="text/javascript" charset="utf-8"></script>
+<!--	<script src="js/weixinApi.js" type="text/javascript" charset="utf-8"></script>-->
 	<script src="js/touchMove.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
 	
@@ -197,7 +205,7 @@
 			})
 			//取消键盘
 
-			$(".content").css("min-height",$(window).height()-50)
+			$(".content").css("min-height",$(window).height()-60)
 			//用户输入框最大
 			$('.question_text>p').css("max-width",$(document).width()-140)
 			//键盘语音切换
@@ -216,7 +224,7 @@
 					},100)	
 				
 			})
-			initEvent($("#sayIpt"))
+//			initEvent($("#sayIpt"))
 
 			//键盘输入，发送出现
 			$('#textDiv').bind('input propertychange', function() { 
@@ -230,7 +238,8 @@
 			});
 			//发送
 			$("#footer1 button").on("touchstart",function(){
-				 to_write($("#textDiv").html());
+				 console.log($(".answer_text>button").eq($(".answer_text>button").length-1).attr("data-action"))
+				 to_write($("#textDiv").html(),$(".answer_text>button").eq($(".answer_text>button").length-1).attr("data-action"));
 				 $("#footer1 button").hide()
 			     $("#textDiv").css("width","calc(100% - 70px)")
 			     $("#textDiv").blur()
@@ -248,15 +257,23 @@
 			 
 			$.ajax({
 				type:"get",
-				url:window.PRJ_ROOT+"/getIntroduction/indexIntroduction",
+				url:window.PRJ_ROOT+"/outcall/index",
 				async:true,
 				success:function(ress){
 					var res = JSON.parse(ress);
-					var data = res.data.data;
-					$(".answer_text>p").append(res.data.introdution)
-					for (var i = 0;i<data.length;i++) {
-						$(".answer_text>p").append("<br /><a data_id='"+data[i]["id"]+"' data_name='"+data[i]["name"]+"' data_level='"+data[i]["level"]+"'>"+data[i]["name"]+"</a>")
+					var data = res.data;
+					console.log(data)
+					$(".answer_text").append("<p>"+data.question+"</p>")
+					if (data.yesId !=0&&data.refuseId !=0) {
+						$(".answer_text").append("<button type='button' class='Tbtn Rbtn' data-action="+data.action+" data-id="+data.yesId+">"+data.yesName+"</button>"+"<button type='button' class='Tbtn Ebtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>")
+					} else if(data.refuseId !=0&&data.yesId ==0){
+						$(".answer_text").append("<button type='button' class='Ebtn Obtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>")
+					}else if(data.refuseId ==0&&data.yesId !=0){
+						$(".answer_text").append("<button type='button' class='Rbtn Obtn' data-id="+data.yesId+" data-action="+data.action+">"+data.yseName+"</button>")
 					}
+					
+					
+
 					if ($(document).height()>$(window).height()) {
 						$(document).scrollTop($(document).height()-$(window).height())
 					}
@@ -268,25 +285,20 @@
 		})
 
 	function atouch(){
-			for (var i = 0;i<$(".answer_text>p>a").length;i++) {
-				$(".answer_text>p>a").eq(i).off('touchstart').on('touchstart',function(){
-					var athis=$(".answer_text>p>a").eq($(".answer_text>p>a").index(this));
-					if (athis.attr("data_id")) {
-						var msg = {"id":athis.attr("data_id"),"name":athis.attr("data_name"),"level":athis.attr("data_level")}
-						aoe(athis.html(),msg)
-					} else{
-						aoe(athis.html())
-					}
-					
+			for (var i = 0;i<$(".answer_text>button").length;i++) {
+				$(".answer_text>button").eq(i).off('touchstart').on('touchstart',function(){
+					var athis=$(".answer_text>button").eq($(".answer_text>button").index(this));
+					console.log(athis.html(),athis.attr("data-id"),athis.hasClass("Rbtn"))
+					aoe(athis.html(),athis.attr("data-id"),athis.hasClass("Rbtn"))
 				})
 			}
 	}
-	function aoe(Thtml,msg){
-		console.log(msg)
+	function aoe(Thtml,msg,is){
+		
 		$("#textDiv").html(Thtml)
-		to_write(Thtml,msg)
+		to_write(Thtml,msg,is)
 	}
-	function to_write(Thtml,msg){
+	function to_write(Thtml,msg,is){
 		var str ='<div class="question clearfix">'+
 					'<div class="heard_img fr">'+
 						'<img src="img/touxiang.jpg" alt="" width="100%">'+
@@ -299,12 +311,24 @@
 		$(".speak_box").append(str)
 		$('.question_text>p').css({"max-width":$(document).width()-140,"word-wrap":"break-word","word-break":"normal"})
 		var sDate,appUrl;
-		if (msg) {
-			sDate = msg;
-			appUrl = window.PRJ_ROOT+"/getIntroduction/normalIntrodution";
-		} else{
-			sDate = {"question":Thtml};
-			appUrl = window.PRJ_ROOT+"/Jsapi/textQa";
+		if (is==true) {
+			
+			sDate = {"yesId":msg};
+			appUrl = window.PRJ_ROOT+"/outcall/yes";
+		} else if(is===false){
+			
+			sDate = {"refuseId":msg};
+			appUrl = window.PRJ_ROOT+"/outcall/refuse";
+		}else{
+			
+			if (msg!="null") {
+				sDate ={"data":Thtml,"action":msg};
+				appUrl = window.PRJ_ROOT+"/outcall/textDoAction";
+			} else{
+				console.log("hahahhah")
+				return
+			}
+			
 		}
 		console.log(sDate)
 		$.ajax({
@@ -317,33 +341,36 @@
 			dataType:"json",
 			success:function(res){
 				console.log(res)
-				if (res.data.isBase==false) {
-					var pstr="";
-					var data = res.data.data;
-					for (var i = 0;i<data.length;i++) {
-							pstr+="<a data_id='"+data[i]["id"]+"' data_name='"+data[i]["name"]+"' data_level='"+data[i]["level"]+"'>"+data[i]["name"]+"</a><br />";
-						}
-
-							if ($(document).height()>$(window).height()) {
-								$(document).scrollTop($(document).height()-$(window).height())
-							}
-							atouch()
-				} else{
-					var strr = '<div class="answer clearfix">'+
-								'<div class="heard_img fl">'+
-									'<img src="img/wxLogo.jpg" alt="" width="100%">'+
-								'</div>'+
-								'<div class="answer_text">'+
-									'<p>'+res.data.introdution+'</p>'+
-									
-								'</div>'+
-							'</div>';
-						$(".speak_box").append(strr)
-						if ($(document).height()>$(window).height()) {
-							$(document).scrollTop($(document).height()-$(window).height())
-						}
-						atouch()
-				}
+				var data =res.data;
+				
+				
+				if (data.yesId !=0&&data.refuseId !=0) {
+						btnStr ="<button type='button' class='Tbtn Rbtn' data-action="+data.action+" data-id="+data.yesId+">"+data.yesName+"</button>"+"<button type='button' class='Tbtn Ebtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
+					} else if(data.refuseId !=0&&data.yesId ==0){
+						btnStr ="<button type='button' class='Ebtn Obtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
+					}else if(data.refuseId ==0&&data.yesId !=0){
+						btnStr ="<button type='button' class='Rbtn Obtn' data-id="+data.yesId+" data-action="+data.action+">"+data.yseName+"</button>";
+					}else{
+						btnStr="";
+					}
+				
+				
+				var strr = '<div class="answer clearfix">'+
+						'<div class="heard_img fl">'+
+							'<img src="img/wxLogo.jpg" alt="" width="100%">'+
+						'</div>'+
+						'<div class="answer_text">'+
+							'<p>'+data.question+'</p>'+
+							btnStr+
+							
+						'</div>'+
+					'</div>';
+					
+					$(".speak_box").append(strr)
+				if ($(document).height()>$(window).height()) {
+						$(document).scrollTop($(document).height()-$(window).height())
+					}
+				atouch()
 				
 			},error:function(res){
 				

@@ -4,7 +4,7 @@ var posEnd = 0;//初始化终点坐标
 var posMove = 0;//初始化滑动坐标  
 var timeStart=0;
 var timeEnd=0;
-console.log(screen); 
+//console.log(screen); 
 
 function Aanmite(){
 	setTimeout(function(){

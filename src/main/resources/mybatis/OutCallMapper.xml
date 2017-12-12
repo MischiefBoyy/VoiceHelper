@@ -6,8 +6,11 @@
 		<id property="id" column="id" jdbcType="INTEGER"/>
 		<result property="yesId" column="y_id" jdbcType="INTEGER"/>
 		<result property="refuseId" column="r_id" jdbcType="INTEGER"/>
+		<result property="doneId" column="done_id" jdbcType="INTEGER"/>
 		<result property="question" column="question" jdbcType="VARCHAR"/>
 		<result property="action" column="action" jdbcType="VARCHAR"/>
+		<result property="yesName" column="yes_name" jdbcType="VARCHAR"/>
+		<result property="refuseName" column="refuse_name" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<select id="getIndexQuestion" resultMap="question_model">
@@ -15,15 +18,26 @@
 	</select>
 	
 	<select id="getYesQuestion" resultMap="question_model" parameterType="java.lang.Integer">
-		select * from t_question where y_id=#{yesId}; 
+		select * from t_question where id=#{yesId}; 
 	</select>
 	
-	<select id="getRefuseQuestion" resultType="map" parameterType="java.lang.Integer">
-		select q_id as questionId,a_value as question,r_action as action from t_refuse where r_id=#{refuseId}; 
+	<select id="getRefuseQuestion" resultMap="question_model" parameterType="java.lang.Integer">
+		select * from t_refuse where id=#{refuseId}; 
 	</select>
 	
 	
+	<select id="getActionTableName" resultType="java.lang.String" parameterType="java.lang.String">
+		select action_table from t_action where action_name=#{actionName};
+	</select>
 	
+	
+	<select id="getYesQuestionByAction" resultMap="question_model" parameterType="java.lang.String">
+		select * from t_question where id=(select done_id from t_question where action=#{action}); 
+	</select>
+	
+		<select id="getRefuseQuestionByAction" resultMap="question_model" parameterType="java.lang.String">
+		select * from t_question where id=(select done_id from t_question where action=#{action}); 
+	</select>
 	
 	
 	

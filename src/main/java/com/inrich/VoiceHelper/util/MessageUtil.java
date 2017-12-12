@@ -186,5 +186,15 @@ public class MessageUtil {
 	 * 当前查询的为二级业务
 	 */
 	public static final int IS_CHILD=2;
+	
+	/**
+	 * 有逻辑的问答系统  问答表
+	 */
+	public static final String YES_TABLE="t_question";
+	
+	/**
+	 * 有逻辑的问答系统  否定表
+	 */
+	public static final String REFUSE_TABLE="t_refuse";
 
 }

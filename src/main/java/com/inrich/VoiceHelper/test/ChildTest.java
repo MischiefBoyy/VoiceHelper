@@ -6,23 +6,29 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.google.gson.Gson;
 import com.inrich.VoiceHelper.mapper.TokenMapper;
+import com.inrich.VoiceHelper.model.OutprintMsg;
 import com.inrich.VoiceHelper.model.TokenInfo;
 import com.inrich.VoiceHelper.service.BankService;
 import com.inrich.VoiceHelper.service.ComposeVoiceService;
 import com.inrich.VoiceHelper.service.CreateMenuService;
 import com.inrich.VoiceHelper.service.IntrodutionService;
 import com.inrich.VoiceHelper.service.OperateVoiceService;
+import com.inrich.VoiceHelper.service.OutCallService;
+import com.inrich.VoiceHelper.service.OutCallServiceImpl;
 import com.inrich.VoiceHelper.service.TokenService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ChildTest {
+	protected static Logger log = LoggerFactory.getLogger(OutCallServiceImpl.class);
 	@Autowired
 	private IntrodutionService introdutionService;
 	@Autowired
@@ -37,6 +43,9 @@ public class ChildTest {
 	private CreateMenuService createMenuService;
 	@Autowired
 	private TokenMapper tokenMapper;
+	
+	@Autowired
+	private OutCallService outCallService;
 	@Test
 	public void testIndexIntrodution() {
 		System.out.println(introdutionService.getIndexIntrodution());
@@ -108,6 +117,22 @@ public class ChildTest {
 		List<TokenInfo> list=tokenMapper.getTestData();
 		System.out.println("-----------------");
 		System.out.println(new Gson().toJson(list));
+	}
+	
+	@Test
+	public void testOutCallIndex() {
+		System.out.println(outCallService.outCallIndex());
+	}
+	
+	@Test
+	public void testOutCallProcess() {
+		System.out.println(outCallService.outCallYes(4));
+		System.out.println(outCallService.outCallRefues(3));
+	}
+	
+	@Test
+	public void testOutCallAction() {
+		log.info(outCallService.textDoAction("你好啊", "checkAddress"));
 	}
 	
 	

@@ -20,8 +20,18 @@ public class OutCallController {
 	}
 	
 	@RequestMapping("/yes")
-	public String outCallYes(@RequestParam int yesId,@RequestParam String action,@RequestParam String data) {
-		return null;
+	public String outCallYes(@RequestParam int yesId) {
+		return outCallService.outCallYes(yesId);
+	}
+	
+	@RequestMapping("/refuse")
+	public String outCallRefuse(@RequestParam int refuseId) {
+		return outCallService.outCallRefues(refuseId);
+	}
+	
+	@RequestMapping("/textDoAction")
+	public String outCallRefuse(@RequestParam String action ,@RequestParam String data) {
+		return outCallService.textDoAction(data, action);
 	}
 
 }

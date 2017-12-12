@@ -1,6 +1,5 @@
 package com.inrich.VoiceHelper.mapper;
 
-import java.util.Map;
 
 import com.inrich.VoiceHelper.model.QuestionModel;
 
@@ -10,5 +9,11 @@ public interface OutCallMapper {
 	
 	public QuestionModel getYesQuestion(int yesId);
 	
-	public Map<String,Object> getRefuseQuestion(int refuseId);
+	public QuestionModel getRefuseQuestion(int refuseId);
+	
+	public String getActionTableName(String actionName);
+	
+	public QuestionModel getYesQuestionByAction(String action);
+	
+	public QuestionModel getRefuseQuestionByAction(String action);
 }

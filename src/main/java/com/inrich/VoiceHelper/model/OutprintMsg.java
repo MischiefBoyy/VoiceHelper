@@ -1,6 +1,7 @@
 package com.inrich.VoiceHelper.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class OutprintMsg {
 	private String state;
@@ -29,7 +30,8 @@ public class OutprintMsg {
 	}
 
 	public String toJson() {
-		return new Gson().toJson(this);
+		Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm:ss").serializeNulls().create();
+		return gson.toJson(this);
 	}
 
 }

@@ -126,8 +126,8 @@ public class ChildTest {
 	
 	@Test
 	public void testOutCallProcess() {
-		System.out.println(outCallService.outCallYes(4));
-		System.out.println(outCallService.outCallRefues(3));
+		System.out.println(outCallService.outCallYes(2));
+		System.out.println(outCallService.outCallYes(8));
 	}
 	
 	@Test

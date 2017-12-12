@@ -31,8 +31,9 @@ public class OutCallServiceImpl implements OutCallService {
 	 */
 	@Override
 	public String outCallYes(int yesId) {
-
-		String result = new OutprintMsg("success", outCallMapper.getYesQuestion(yesId)).toJson();
+		QuestionModel model=outCallMapper.getYesQuestion(yesId);
+		changQuestionByKey(model);
+		String result = new OutprintMsg("success", model).toJson();
 		return result;
 	}
 
@@ -73,6 +74,7 @@ public class OutCallServiceImpl implements OutCallService {
 	@Override
 	public String outCallRefues(int refuseId) {
 		QuestionModel model = outCallMapper.getRefuseQuestion(refuseId);
+		changQuestionByKey(model);
 		return new OutprintMsg("success", model).toJson();
 	}
 
@@ -106,6 +108,31 @@ public class OutCallServiceImpl implements OutCallService {
 	public String textDoProcess(int yesId, int noId, String data) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**
+	 * 模拟拼接客户地址内容
+	 * @TODO TODO
+	 * @Time 2017年12月12日 下午3:18:10
+	 * @author WEQ
+	 * @return void
+	 */
+	private void changQuestionByKey(QuestionModel model) {
+		if(model != null && model.getKeyWord() !=null) {
+			switch (model.getKeyWord()) {
+			case "checkAddress":
+				String address="上海市宝山区大场镇锦秋路";
+				model.setQuestion(model.getQuestion().replace("**", address));
+				break;
+			case "checkWorkAddress":
+				String workAddress="上海市虹口区邯郸路43号";
+				model.setQuestion(model.getQuestion().replace("**", workAddress));
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 
 }

@@ -11,6 +11,7 @@
 		<result property="action" column="action" jdbcType="VARCHAR"/>
 		<result property="yesName" column="yes_name" jdbcType="VARCHAR"/>
 		<result property="refuseName" column="refuse_name" jdbcType="VARCHAR"/>
+		<result property="keyWord" column="s_key" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<select id="getIndexQuestion" resultMap="question_model">

@@ -8,6 +8,7 @@ public class QuestionModel {
 	private String action;
 	private String yesName;
 	private String refuseName;
+	private String keyWord;
 	private int doneId;
 
 	public int getId() {
@@ -72,6 +73,14 @@ public class QuestionModel {
 
 	public void setDoneId(int doneId) {
 		this.doneId = doneId;
+	}
+
+	public String getKeyWord() {
+		return keyWord;
+	}
+
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
 	}
 	
 	

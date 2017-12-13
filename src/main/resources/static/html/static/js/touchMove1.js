@@ -163,7 +163,7 @@ function initEvent(btnElem) {
                             success: function (res) {
                             var serverId = res.serverId; // 返回音频的服务器端ID
                             console.log("----上传到微信服务器录音成功："+serverId);
-                            var msg = {"mediaId":serverId,"action":$(".answer_text").eq($(".answer_text").length-1).attr("data-action"),"yseId":$(".answer_text").eq($(".answer_text").length-1).attr("data-yesId"),"refuseId":$(".answer_text").eq($(".answer_text").length-1).attr("data-refuseId")}
+                            var msg = {"mediaId":serverId,"action":$(".answer_text").eq($(".answer_text").length-1).attr("data-action"),"yesId":$(".answer_text").eq($(".answer_text").length-1).attr("data-yesId"),"refuseId":$(".answer_text").eq($(".answer_text").length-1).attr("data-refuseId")}
                             console.log(msg)
                             //发送临时素材id到自己的后台进行语音解析
                             $.ajax({

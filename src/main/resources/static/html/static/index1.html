@@ -238,8 +238,12 @@
 			});
 			//发送
 			$("#footer1 button").on("touchstart",function(){
-				 console.log($(".answer_text>button").eq($(".answer_text>button").length-1).attr("data-action"))
-				 to_write($("#textDiv").html(),$(".answer_text>button").eq($(".answer_text>button").length-1).attr("data-action"));
+				 var msg ={"yesId":$(".answer_text").eq($(".answer_text").length-1).attr("data-yesId"),
+				 		   "refuseId":$(".answer_text").eq($(".answer_text").length-1).attr("data-refuseId"),
+				 		   "action":$(".answer_text").eq($(".answer_text").length-1).attr("data-action"),
+				 		   "data":$("#textDiv").html()}
+				 console.log(msg)
+				 to_write($("#textDiv").html(),msg);
 				 $("#footer1 button").hide()
 			     $("#textDiv").css("width","calc(100% - 70px)")
 			     $("#textDiv").blur()
@@ -264,6 +268,10 @@
 					var data = res.data;
 					console.log(data)
 					$(".answer_text").append("<p>"+data.question+"</p>")
+					$(".answer_text").attr("data-yesId",data.yesId)
+					$(".answer_text").attr("data-refuseId",data.refuseId)					
+					$(".answer_text").attr("data-action",String(data.action))
+					
 					if (data.yesId !=0&&data.refuseId !=0) {
 						$(".answer_text").append("<button type='button' class='Tbtn Rbtn' data-action="+data.action+" data-id="+data.yesId+">"+data.yesName+"</button>"+"<button type='button' class='Tbtn Ebtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>")
 					} else if(data.refuseId !=0&&data.yesId ==0){
@@ -320,14 +328,10 @@
 			sDate = {"refuseId":msg};
 			appUrl = window.PRJ_ROOT+"/outcall/refuse";
 		}else{
-			
-			if (msg!="null") {
-				sDate ={"data":Thtml,"action":msg};
+				sDate =msg;
+				console.log(msg)
 				appUrl = window.PRJ_ROOT+"/outcall/textDoAction";
-			} else{
-				console.log("hahahhah")
-				return
-			}
+			
 			
 		}
 		console.log(sDate)
@@ -341,10 +345,9 @@
 			dataType:"json",
 			success:function(res){
 				console.log(res)
-				var data =res.data;
-				
-				
-				if (data.yesId !=0&&data.refuseId !=0) {
+				if (res.state=="success") {
+					var data =res.data;
+					if (data.yesId !=0&&data.refuseId !=0) {
 						btnStr ="<button type='button' class='Tbtn Rbtn' data-action="+data.action+" data-id="+data.yesId+">"+data.yesName+"</button>"+"<button type='button' class='Tbtn Ebtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
 					} else if(data.refuseId !=0&&data.yesId ==0){
 						btnStr ="<button type='button' class='Ebtn Obtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
@@ -353,14 +356,25 @@
 					}else{
 						btnStr="";
 					}
+					questionStr = data.question;
+					
+				} else{
+					var data = res.data.data;
+					btnStr="";
+					questionStr = res.data.title;
+				}
+				
+				
+				
+
 				
 				
 				var strr = '<div class="answer clearfix">'+
 						'<div class="heard_img fl">'+
 							'<img src="img/wxLogo.jpg" alt="" width="100%">'+
 						'</div>'+
-						'<div class="answer_text">'+
-							'<p>'+data.question+'</p>'+
+						'<div class="answer_text" data-yesId='+data.yesId+' data-refuseId='+data.refuseId+' data-action='+data.action+'>'+
+							'<p>'+questionStr+'</p>'+
 							btnStr+
 							
 						'</div>'+

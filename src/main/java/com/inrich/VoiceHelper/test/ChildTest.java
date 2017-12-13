@@ -119,16 +119,16 @@ public class ChildTest {
 		System.out.println(new Gson().toJson(list));
 	}
 	
-	@Test
-	public void testOutCallIndex() {
-		System.out.println(outCallService.outCallIndex());
-	}
-	
-	@Test
-	public void testOutCallProcess() {
-		System.out.println(outCallService.outCallYes(2));
-		System.out.println(outCallService.outCallYes(8));
-	}
+//	@Test
+//	public void testOutCallIndex() {
+//		System.out.println(outCallService.outCallIndex());
+//	}
+//	
+//	@Test
+//	public void testOutCallProcess() {
+//		System.out.println(outCallService.outCallYes(2));
+//		System.out.println(outCallService.outCallYes(8));
+//	}
 	
 	@Test
 	public void testOutCallAction() {

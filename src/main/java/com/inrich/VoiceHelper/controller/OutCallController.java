@@ -1,5 +1,7 @@
 package com.inrich.VoiceHelper.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,23 +17,24 @@ public class OutCallController {
 	
 	
 	@RequestMapping("/index")
-	public String outCallIndex() {
-		return outCallService.outCallIndex();
+	public String outCallIndex(HttpServletRequest request) {
+		return outCallService.outCallIndex(request);
 	}
 	
 	@RequestMapping("/yes")
-	public String outCallYes(@RequestParam int yesId) {
-		return outCallService.outCallYes(yesId);
+	public String outCallYes(@RequestParam int yesId,HttpServletRequest request) {
+		return outCallService.outCallYes(yesId,request);
 	}
 	
 	@RequestMapping("/refuse")
-	public String outCallRefuse(@RequestParam int refuseId) {
-		return outCallService.outCallRefues(refuseId);
+	public String outCallRefuse(@RequestParam int refuseId,HttpServletRequest request) {
+		return outCallService.outCallRefues(refuseId,request);
 	}
 	
 	@RequestMapping("/textDoAction")
-	public String outCallRefuse(@RequestParam String action ,@RequestParam String data) {
-		return outCallService.textDoAction(data, action);
+	public String outCallDotext(@RequestParam String action ,@RequestParam String data,@RequestParam int yesId ,@RequestParam int refuseId,HttpServletRequest request) {
+		return outCallService.dotext(data, action,yesId,refuseId,request);
 	}
+	
 
 }

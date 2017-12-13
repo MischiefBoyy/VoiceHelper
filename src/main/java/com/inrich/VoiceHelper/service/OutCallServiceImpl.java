@@ -229,7 +229,7 @@ public class OutCallServiceImpl implements OutCallService {
 	 * @return boolean
 	 */
 	private  boolean isInteger(char str) {  
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");  
+        Pattern pattern = Pattern.compile("^[0-9]*$");  
         return pattern.matcher(str+"").matches();  
   }
 	

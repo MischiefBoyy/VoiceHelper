@@ -1,6 +1,12 @@
 package com.inrich.VoiceHelper.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,21 +14,34 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.inrich.VoiceHelper.mapper.OutCallMapper;
+import com.inrich.VoiceHelper.model.IntrodutionModel;
 import com.inrich.VoiceHelper.model.OutprintMsg;
 import com.inrich.VoiceHelper.model.QuestionModel;
+import com.inrich.VoiceHelper.util.CodingUtils;
+import com.inrich.VoiceHelper.util.HttpUtils;
 import com.inrich.VoiceHelper.util.MessageUtil;
+import com.inrich.VoiceHelper.util.RemoteProperties;
+import com.inrich.VoiceHelper.util.TransformVoice;
 
 @Service
 public class OutCallServiceImpl implements OutCallService {
 	protected static Logger log = LoggerFactory.getLogger(OutCallServiceImpl.class);
 	@Autowired
 	private OutCallMapper outCallMapper;
+	@Autowired
+	private OperateVoiceService operateVoiceService;
+	@Autowired
+	private RemoteProperties remoteProperties;
 
 	/**
 	 * 获取首条固定问答
@@ -59,7 +78,7 @@ public class OutCallServiceImpl implements OutCallService {
 		case "checkAddress":
 			log.info("----模拟checkAddress");
 			//****弄**号**室
-			char [] array=data.toCharArray();
+			char [] array=(data+"。").toCharArray();
 			List<String> addressInfo=new ArrayList<>(16);
 			String result="";
 			for(char i:array) {
@@ -223,7 +242,7 @@ public class OutCallServiceImpl implements OutCallService {
 	 * @return int
 	 */
 	private int checkStringMean(String data) {
-		String []yesStr= {"愿意","正确","可以","方便","有兴趣","对"};
+		String []yesStr= {"愿意","正确","可以","方便","有兴趣","对","好","好的","行"};
 		String []noStr= {"不愿意","没兴趣","无兴趣","不正确","不可以","不方便","不对","错误"};
 		
 		for(String refuse:noStr) {
@@ -266,6 +285,100 @@ public class OutCallServiceImpl implements OutCallService {
 			model=outCallMapper.getRefuseQuestion(id);
 		}
 		return model;
+	}
+	
+	
+	/**
+	 *	录音转换成文本 无语意分析
+	 * @TODO TODO
+	 * @Time 2017年12月13日 上午11:14:01
+	 * @author WEQ
+	 * @return String
+	 */
+	private String doRecordToText(String voicePath, String scene) throws UnsupportedEncodingException {
+		/**
+		 * @TODO 语音语意分析doRecordToText
+		 * @Time 2017年11月9日 下午5:25:24
+		 * @author WEQ
+		 * @return 语音语意分析得到的json串
+		 * @throws UnsupportedEncodingException
+		 */
+		String result = null;
+		// 获得 从1970年1月1日0点0 分0 秒开始到现在的秒数(String)
+		// 参数二
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+		String curTime = cal.getTimeInMillis() / 1000 + "";
+
+		// 参数三
+		Map<String, String> paramJson = new HashMap<>();
+		paramJson.put("auf", "16k");
+		paramJson.put("aue", "raw");
+		paramJson.put("scene", scene);
+		String paramsJson = new Gson().toJson(paramJson);
+		String param = Base64.getEncoder().encodeToString(paramsJson.getBytes("utf-8"));
+
+		// 参数四
+		File file = new File(voicePath);
+		byte[] bytes = null;
+		try {
+			bytes = IOUtils.toByteArray(new FileInputStream(file));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		String base64File = Base64.getEncoder().encodeToString(bytes);
+
+		StringBuilder s2Md5 = new StringBuilder();
+		s2Md5.append(MessageUtil.XF_APP_KEY).append(curTime).append(param).append("data=").append(base64File);
+
+		String checkSum = null;
+		checkSum = CodingUtils.md5Encode(s2Md5.toString());
+
+		Map<String, Object> bodyMap = new HashMap<String, Object>();
+		bodyMap.put("data", base64File);
+
+		Map<String, Object> headerMap = new HashMap<String, Object>();
+
+		headerMap.put("X-Appid", MessageUtil.XF_APP_ID);
+		headerMap.put("X-CurTime", curTime);
+		headerMap.put("X-Param", param);
+		headerMap.put("X-CheckSum", checkSum);
+		headerMap.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+
+		try {
+			result = HttpUtils.HttpClientPost(MessageUtil.URL_VOICE2TEXT_PATH, "UTF-8", bodyMap, headerMap);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return result;
+
+	}
+
+	@Override
+	public String doVoice(String mediaId, String action, int yesId, int refuseId,
+			HttpServletRequest request) throws UnsupportedEncodingException {
+		String downloadPath=operateVoiceService.downloadVoice(mediaId);
+		
+		 //经过ffmpeg 转换语音后重新生成的语音路径
+		 String servicePath = remoteProperties.getWxtoxf() + mediaId + ".wav";
+		
+		 //转换成 XF需要的音频格式
+		 TransformVoice.doTransformWav2Wav(downloadPath, servicePath,remoteProperties.getFfmpeg());
+
+		String httpResult = doRecordToText(servicePath, "main");
+		//解析返回的数据
+		JsonObject jsonObject = new JsonParser().parse(httpResult).getAsJsonObject();
+		String stateCode = jsonObject.get("code").getAsString();
+
+		if (!("00000".equals(stateCode))) {
+			//连接讯飞出现错误，可以友情的提醒用户  使用文本输入
+		}
+		String data=jsonObject.get("data").getAsJsonObject().get("result").getAsString();
+		
+		
+		return null;
 	}
 
 }

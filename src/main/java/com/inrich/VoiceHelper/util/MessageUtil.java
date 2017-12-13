@@ -56,6 +56,11 @@ public class MessageUtil {
 	/**
 	 * XF 的文本语意接口
 	 */
+	public static final String URL_VOICE2TEXT_PATH="http://api.xfyun.cn/v1/aiui/v1/voice_iat";
+	
+	/**
+	 * XF 的文本语意接口
+	 */
 	public static final String URL_VOICESEMANTIC_PATH="http://api.xfyun.cn/v1/aiui/v1/voice_semantic";
 	/**
 	 * XF 的app key

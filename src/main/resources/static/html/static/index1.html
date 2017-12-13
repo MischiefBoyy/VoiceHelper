@@ -182,11 +182,11 @@
 		</div>
 	</body>
 	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
-	<!--<script src="js/wxWeb.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/wxWeb.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/const.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/AppCommon.js" type="text/javascript" charset="utf-8"></script>
-<!--	<script src="js/weixinApi.js" type="text/javascript" charset="utf-8"></script>-->
-	<script src="js/touchMove.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/weixinApi.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/touchMove1.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
 	
 	<script type="text/javascript">	
@@ -224,7 +224,7 @@
 					},100)	
 				
 			})
-//			initEvent($("#sayIpt"))
+			initEvent($("#sayIpt"))
 
 			//键盘输入，发送出现
 			$('#textDiv').bind('input propertychange', function() { 
@@ -394,120 +394,7 @@
 	}
 	
 	function voiceCallBack(jsonStr){
-		var res=JSON.parse(jsonStr);
-		
-		if(res.state == "success"){
-			if (res.data.data.isBase==false) {
-				var pstr="";
-				var data = res.data.data.data;
-				for (var i = 0;i<data.length;i++) {
-						pstr+="<a data_id='"+data[i]["id"]+"' data_name='"+data[i]["name"]+"' data_level='"+data[i]["level"]+"'>"+data[i]["name"]+"</a><br />";
-					}
-				var strr = '<div class="answer clearfix">'+
-							'<div class="heard_img fl">'+
-								'<img src="img/wxLogo.jpg" alt="" width="100%">'+
-							'</div>'+
-							'<div class="answer_text">'+
-								'<p>'+res.data.data.introdution+'</p>'+
-								'<p>'+pstr+'</p>'+
-								
-							'</div>'+
-						'</div>';
-					
-						
-
-			} else{
-				var strr = '<div class="answer clearfix">'+
-							'<div class="heard_img fl">'+
-								'<img src="img/wxLogo.jpg" alt="" width="100%">'+
-							'</div>'+
-							'<div class="answer_text">'+
-								'<p>'+res.data.data.introdution+'</p>'+
-								
-							'</div>'+
-						'</div>';
-					
-			}
-						var audioS = '<div class="answer clearfix">'+
-										'<div class="heard_img fl">'+
-											'<img src="img/wxLogo.jpg" alt="" width="100%">'+
-										'</div>'+
-										'<div class="answer_text" style="width:50%">'+
-											'<p><i class="iconfont icon-yuyin"></i>&nbsp;<p class="preloader_1"><span></span><span></span><span></span><span></span><span></span></p><audio src="../../voice/'+res.data.path+'"></audio></p>'+
-											'<span class="mark"></span>'+
-										'</div>'+
-									'</div>';	
-						$(".speak_box").append(strr);
-						$(".speak_box").append(audioS);
-						//后台返回录音播放
-						$(".answer_text").off().on("touchstart",function(){
-							var lyIndex = $(".answer_text").index(this);
-							var tAudio = $(".answer_text").eq(lyIndex).find("audio")[0];
-							if ($.cookie('the_cookie')!="null"&&$.cookie('the_cookie')!=lyIndex) {
-								console.log($.cookie('the_cookie'))
-								$(".answer_text").eq($.cookie('the_cookie')).find("audio")[0].pause();
-								$(".answer_text").eq($.cookie('the_cookie')).find("audio")[0].currentTime = 0;
-								$(".answer_text").eq($.cookie('the_cookie')).find("i.iconfont").show()
-					            $(".answer_text").eq($.cookie('the_cookie')).find(".preloader_1").hide()
-							}
-							if ($.cookie('wx_cookie')) {
-								wx.stopVoice({
-				  					localId:$(".question_text").eq($.cookie('wx_cookie')).attr("localId")
-				  				})
-				  				$(".question_text").eq($.cookie('wx_cookie')).find("i.iconfont").show()
-				  				$(".question_text").eq($.cookie('wx_cookie')).find(".preloader_1").hide()
-			  					$(".question_text").eq($.cookie('wx_cookie')).attr("lyzt","false")
-							}
-							if (tAudio.paused){ /*如果已经暂停*/
-					            tAudio.play(); /*播放*/
-					            $(".answer_text").eq(lyIndex).find("i.iconfont").hide()
-					            $(".answer_text").eq(lyIndex).find(".preloader_1").show()
-					            $(".answer_text").eq(lyIndex).find(".mark").hide()
-					            //定时器监听语音播放完毕
-					           var setIntervalPlayEnd = setInterval(function(){
-					            	if(tAudio.ended){
-						            	$(".answer_text").eq(lyIndex).find("i.iconfont").show()
-							            $(".answer_text").eq(lyIndex).find(".preloader_1").hide()
-							            clearInterval(setIntervalPlayEnd)
-						            }
-					            },1000)
-					            $.cookie('the_cookie',lyIndex);
-					        }else {
-					            tAudio.pause();/*暂停*/
-					            tAudio.currentTime = 0;/*重置*/
-					            $(".answer_text").eq(lyIndex).find("i.iconfont").show()
-					            $(".answer_text").eq(lyIndex).find(".preloader_1").hide()
-					            
-					        }
-						})
-						
-						
-						
-						if ($(document).height()>$(window).height()) {
-							$(document).scrollTop($(document).height()-$(window).height())
-						}
-						atouch()
-			
-			
-			return ;
-		}
-		if(res.state == "error"){
-					var strr = '<div class="answer clearfix">'+
-					'<div class="heard_img fl">'+
-						'<img src="img/wxLogo.jpg" alt="" width="100%">'+
-					'</div>'+
-					'<div class="answer_text">'+
-						'<p>'+res.data.introdution+'</p>'+
-						
-					'</div>'+
-				'</div>';
-			$(".speak_box").append(strr)
-			if ($(document).height()>$(window).height()) {
-				$(document).scrollTop($(document).height()-$(window).height())
-			}
-			atouch()
-		}
-	
+		console.log(jsonStr)	
 	}
 	
 	

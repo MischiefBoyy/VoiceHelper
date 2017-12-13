@@ -28,6 +28,7 @@ import com.inrich.VoiceHelper.model.IntrodutionModel;
 import com.inrich.VoiceHelper.model.OutprintMsg;
 import com.inrich.VoiceHelper.model.QuestionModel;
 import com.inrich.VoiceHelper.util.CodingUtils;
+import com.inrich.VoiceHelper.util.FileUtils;
 import com.inrich.VoiceHelper.util.HttpUtils;
 import com.inrich.VoiceHelper.util.MessageUtil;
 import com.inrich.VoiceHelper.util.RemoteProperties;
@@ -243,7 +244,7 @@ public class OutCallServiceImpl implements OutCallService {
 	 */
 	private int checkStringMean(String data) {
 		String []yesStr= {"愿意","正确","可以","方便","有兴趣","对","好","好的","行"};
-		String []noStr= {"不愿意","没兴趣","无兴趣","不正确","不可以","不方便","不对","错误"};
+		String []noStr= {"不愿意","没兴趣","无兴趣","不正确","不可以","不方便","不对","错误","不敢兴趣"};
 		
 		for(String refuse:noStr) {
 			if(data.contains(refuse)) {
@@ -361,6 +362,8 @@ public class OutCallServiceImpl implements OutCallService {
 			HttpServletRequest request) throws UnsupportedEncodingException {
 		String downloadPath=operateVoiceService.downloadVoice(mediaId);
 		
+		//判断是否有文件夹，没有的话则创建
+		FileUtils.createFile(remoteProperties.getWxtoxf());
 		 //经过ffmpeg 转换语音后重新生成的语音路径
 		 String servicePath = remoteProperties.getWxtoxf() + mediaId + ".wav";
 		
@@ -376,9 +379,10 @@ public class OutCallServiceImpl implements OutCallService {
 			//连接讯飞出现错误，可以友情的提醒用户  使用文本输入
 		}
 		String data=jsonObject.get("data").getAsJsonObject().get("result").getAsString();
+		//获得文字 直接进入文本解析
+		String result=dotext(data,action,yesId,refuseId,request);
 		
-		
-		return null;
+		return result;
 	}
 
 }

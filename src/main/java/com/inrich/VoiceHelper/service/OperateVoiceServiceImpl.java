@@ -31,6 +31,7 @@ import com.inrich.VoiceHelper.model.OutprintMsg;
 import com.inrich.VoiceHelper.util.CodingUtils;
 import com.inrich.VoiceHelper.util.DatetimeUtil;
 import com.inrich.VoiceHelper.util.DownLoadMedia;
+import com.inrich.VoiceHelper.util.FileUtils;
 import com.inrich.VoiceHelper.util.HttpUtils;
 import com.inrich.VoiceHelper.util.MessageUtil;
 import com.inrich.VoiceHelper.util.RemoteProperties;
@@ -65,6 +66,8 @@ public class OperateVoiceServiceImpl implements OperateVoiceService {
 
 			// 根据内容类型获取扩展名
 			String fileExt = DownLoadMedia.getFileEndWitsh(conn.getHeaderField("Content-Type"));
+			//判断是否有文件夹，没有的话则创建
+			FileUtils.createFile(remoteProperties.getWx());
 			// 将mediaId作为文件名
 			filePath = remoteProperties.getWx() + mediaId + fileExt;
 

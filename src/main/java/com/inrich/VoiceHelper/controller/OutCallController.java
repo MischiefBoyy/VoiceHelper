@@ -1,5 +1,7 @@
 package com.inrich.VoiceHelper.controller;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,11 @@ public class OutCallController {
 	@RequestMapping("/textDoAction")
 	public String outCallDotext(@RequestParam String action ,@RequestParam String data,@RequestParam int yesId ,@RequestParam int refuseId,HttpServletRequest request) {
 		return outCallService.dotext(data, action,yesId,refuseId,request);
+	}
+	
+	@RequestMapping("/doVoice")
+	public String outCalldoVoice(@RequestParam String action ,@RequestParam String mediaId,@RequestParam int yesId ,@RequestParam int refuseId,HttpServletRequest request) throws UnsupportedEncodingException {
+		return outCallService.doVoice(mediaId, action, yesId, refuseId, request);
 	}
 	
 

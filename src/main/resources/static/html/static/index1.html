@@ -394,7 +394,50 @@
 	}
 	
 	function voiceCallBack(jsonStr){
-		alert(jsonStr)	
+			
+		var res =jsonStr;
+		if (res.state=="success") {
+					var data =res.data;
+					if (data.yesId !=0&&data.refuseId !=0) {
+						btnStr ="<button type='button' class='Tbtn Rbtn' data-action="+data.action+" data-id="+data.yesId+">"+data.yesName+"</button>"+"<button type='button' class='Tbtn Ebtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
+					} else if(data.refuseId !=0&&data.yesId ==0){
+						btnStr ="<button type='button' class='Ebtn Obtn' data-id="+data.refuseId+" data-action="+data.action+">"+data.refuseName+"</button>";
+					}else if(data.refuseId ==0&&data.yesId !=0){
+						btnStr ="<button type='button' class='Rbtn Obtn' data-id="+data.yesId+" data-action="+data.action+">"+data.yseName+"</button>";
+					}else{
+						btnStr="";
+					}
+					questionStr = data.question;
+					
+				} else{
+					var data = res.data.data;
+					btnStr="";
+					questionStr = res.data.title;
+				}
+				
+				
+				
+
+				
+				
+				var strr = '<div class="answer clearfix">'+
+						'<div class="heard_img fl">'+
+							'<img src="img/wxLogo.jpg" alt="" width="100%">'+
+						'</div>'+
+						'<div class="answer_text" data-yesId='+data.yesId+' data-refuseId='+data.refuseId+' data-action='+data.action+'>'+
+							'<p>'+questionStr+'</p>'+
+							btnStr+
+							
+						'</div>'+
+					'</div>';
+					
+					$(".speak_box").append(strr)
+				if ($(document).height()>$(window).height()) {
+						$(document).scrollTop($(document).height()-$(window).height())
+					}
+				atouch()
+		
+		
 	}
 	
 	
